@@ -1,13 +1,22 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import { Provider } from "react-redux";
+import { SafeArea } from "./components/common/SafeArea/SafeArea.component";
+import { LogBox } from "react-native";
 
-const Stack = createStackNavigator();
+import Navigation from "./Navigation";
+import { store } from "./redux/store";
+
+LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
+
 export default function App() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Instagram Clone 2</Text>
-    </View>
+    <>
+      <SafeArea>
+        <Provider store={store}>
+          <Navigation />
+        </Provider>
+      </SafeArea>
+      <ExpoStatusBar style="auto" />
+    </>
   );
 }
