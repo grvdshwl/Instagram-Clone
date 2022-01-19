@@ -41,6 +41,52 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
+export const fetchPostForUser = async (uid) => {
+  if (!uid) {
+    return;
+  }
+
+  const snapShot = await firebase
+    .firestore()
+    .collection("posts")
+    .doc(`${uid}`)
+    .collection("userPosts")
+    .orderBy("creation", "asc")
+    .get();
+
+  let posts = snapShot.docs.map((doc) => {
+    const data = doc.data();
+    const id = doc.id;
+    return { id, ...data };
+  });
+
+  return posts.sort(function (a, b) {
+    return b.creation - a.creation;
+  });
+};
+
+export const fetchUserFollowingData = async (id) => {
+  if (!id) {
+    return;
+  }
+
+  const snapShot = await firebase
+    .firestore()
+    .collection("following")
+    .doc(firebase.auth().currentUser.uid)
+    .collection("userFollowing")
+    .get();
+
+  const followingData = snapShot.docs.map((doc) => {
+    const data = doc.data();
+    const id = doc.id;
+    return { id, ...data };
+  });
+
+  const isFollowing = followingData.some((data) => data.id === id);
+  return isFollowing;
+};
+
 export const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
     const unsubscribe = auth.onAuthStateChanged((userAuth) => {
@@ -49,3 +95,35 @@ export const getCurrentUser = () => {
     }, reject);
   });
 };
+
+export const fetchUserFeedData = async (followingData) => {
+  try {
+    const mainData = followingData.map(async (userId) => {
+      const userRef = firebase.firestore().doc(`users/${userId.id}`);
+      const snapShot = await userRef.get();
+      const userPostData = await fetchPostForUser(userId.id);
+
+      const userData = { ...snapShot.data(), id: snapShot.id };
+
+      const data = userPostData.map((data) => ({
+        ...data,
+        userId: userData.id,
+        name: userData.name,
+        email: userData.email,
+      }));
+      return data;
+    });
+
+    const finalData = await Promise.all(mainData);
+
+    const data = finalData.flat().sort(function (a, b) {
+      return b.creation - a.creation;
+    });
+
+    return data;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+export default firebase;

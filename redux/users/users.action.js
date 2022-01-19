@@ -27,3 +27,12 @@ export const signUp = (data) => ({
   type: usersActionTypes.SIGN_UP,
   payload: data,
 });
+
+export const fetchUserPost = () => ({
+  type: usersActionTypes.FETCH_USER_POST,
+});
+
+export const saveUserPost = (data) => ({
+  type: usersActionTypes.SAVE_POST,
+  payload: data,
+});

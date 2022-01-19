@@ -5,4 +5,6 @@ export const usersActionTypes = {
   AUTH_FAILURE: "AUTH_FAILURE",
   SIGN_IN: "SIGN_IN",
   SIGN_UP: "SIGN_UP",
+  FETCH_USER_POST: "FETCH_USER_POST",
+  SAVE_POST: "SAVE_POST",
 };

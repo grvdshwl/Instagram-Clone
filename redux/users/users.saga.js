@@ -2,9 +2,11 @@ import { all, call, takeLatest, put } from "redux-saga/effects";
 import {
   auth,
   createUserProfileDocument,
+  fetchPostForUser,
   getCurrentUser,
 } from "../../firebase";
-import { authFailure, setCurrentUser } from "./users.action";
+import { saveFeed } from "../feed/feed.action";
+import { authFailure, saveUserPost, setCurrentUser } from "./users.action";
 import { usersActionTypes } from "./users.types";
 
 function* authenticationSuccess(userAuth) {
@@ -17,8 +19,6 @@ function* authenticationSuccess(userAuth) {
       ...userData.data(),
       id: userData.id,
     };
-
-    console.log(data);
 
     yield put(setCurrentUser(data));
   } catch (error) {
@@ -43,6 +43,8 @@ function* logOut() {
   try {
     auth.signOut();
     yield checkUserSession();
+
+    yield put(saveFeed([]));
   } catch (error) {
     yield put(authFailure(error.message));
   }
@@ -78,6 +80,17 @@ function* signUp({ payload }) {
   }
 }
 
+function* fetchPost() {
+  try {
+    const userAuth = yield getCurrentUser();
+    const posts = yield fetchPostForUser(userAuth.uid);
+
+    yield put(saveUserPost(posts));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function* checkUsersSessionStart() {
   yield takeLatest(usersActionTypes.CHECK_USER_SESSION, checkUserSession);
 }
@@ -94,11 +107,16 @@ function* onSignUp() {
   yield takeLatest(usersActionTypes.SIGN_UP, signUp);
 }
 
+function* onFetchUserPost() {
+  yield takeLatest(usersActionTypes.FETCH_USER_POST, fetchPost);
+}
+
 export function* userSagas() {
   yield all([
     call(checkUsersSessionStart),
     call(onLogOut),
     call(onSignIn),
     call(onSignUp),
+    call(onFetchUserPost),
   ]);
 }
