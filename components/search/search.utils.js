@@ -4,7 +4,7 @@ export const fetchUsers = async (searchQuery) => {
     const snapShot = await firebase
       .firestore()
       .collection("users")
-      .where("name", ">=", searchQuery)
+      .where("email", "!=", firebase.auth().currentUser.email)
       .get();
 
     let usersData = snapShot.docs.map((doc) => {
@@ -12,7 +12,7 @@ export const fetchUsers = async (searchQuery) => {
       const id = doc.id;
       return { id, ...data };
     });
-    return usersData;
+    return usersData.filter((data) => data.name.match(new RegExp(searchQuery)));
   } catch (error) {
     console.log(error.message);
   }

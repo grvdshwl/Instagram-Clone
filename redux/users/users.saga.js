@@ -53,8 +53,9 @@ function* logOut() {
 function* signIn({ payload }) {
   try {
     const { email, password } = payload;
+    const signInEmail = email.trim();
 
-    yield auth.signInWithEmailAndPassword(email, password);
+    yield auth.signInWithEmailAndPassword(signInEmail, password);
     yield checkUserSession();
   } catch (error) {
     yield put(authFailure(error.message));
@@ -69,7 +70,12 @@ function* signUp({ payload }) {
       throw new Error("passwords do not match");
     }
 
-    const { user } = yield auth.createUserWithEmailAndPassword(email, password);
+    const signUpEmail = email.trim();
+
+    const { user } = yield auth.createUserWithEmailAndPassword(
+      signUpEmail,
+      password
+    );
 
     if (user) {
       yield createUserProfileDocument(user, { name });

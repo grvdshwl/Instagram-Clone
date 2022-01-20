@@ -110,6 +110,7 @@ export const fetchUserFeedData = async (followingData) => {
         userId: userData.id,
         name: userData.name,
         email: userData.email,
+        profile_pic: userData.profile_pic,
       }));
       return data;
     });
