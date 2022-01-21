@@ -1,54 +1,70 @@
 import { Camera } from "expo-camera";
-import React, { useEffect, useRef, useState } from "react";
-import { View, Text } from "react-native";
+import React, { useLayoutEffect, useRef, useState } from "react";
+import { View, Text, AppState } from "react-native";
 import styled from "styled-components";
 import { Avatar } from "react-native-paper";
 import { TouchableOpacity } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 
 const ProfileCamera = styled(Camera)`
   width: 100%;
-  height: 80%;
-`;
-
-const CameraIconContainer = styled(View)`
-  display: flex;
-  flex: 0.8;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  height: 85%;
 `;
 
 const CameraIcon = styled(Avatar.Icon).attrs({
   size: 80,
   icon: "camera",
   backgroundColor: "black",
-})`
-  margin: 5px 0;
-`;
+})``;
 
 const IconContainer = styled.View`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   flex: 1;
+  margin: 0 25px;
 `;
 
 const SwitchCameraIcon = styled(Avatar.Icon).attrs({
-  size: 50,
+  size: 60,
   icon: "camera-party-mode",
   backgroundColor: "black",
-})`
-  margin-right: 5px;
-`;
+})``;
+
+const GalleryIcon = styled(Avatar.Icon).attrs({
+  size: 60,
+  icon: "image-area",
+  backgroundColor: "black",
+})``;
 
 export const TakeImage = ({ handleImage }) => {
-  const cameraRef = useRef(null);
+  const cameraRef = useRef();
+  const appState = useRef(AppState.currentState);
 
   const [hasPermission, setHasPermission] = useState("");
+  const [isActive, setIsActive] = useState(appState.current);
   const [frontCam, setFrontCam] = useState(true);
   const isFocused = useIsFocused();
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result?.cancelled) {
+      let image = {
+        uri: result.uri,
+        front: false,
+      };
+      handleImage(image);
+    }
+  };
 
   const snap = async () => {
     if (cameraRef) {
@@ -72,11 +88,25 @@ export const TakeImage = ({ handleImage }) => {
     setFrontCam(!frontCam);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === "granted");
     })();
+  }, []);
+
+  useLayoutEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      appState.current = nextAppState;
+
+      setIsActive(appState.current === "active");
+    });
+
+    return () => {
+      if (subscription?.remove) {
+        subscription?.remove();
+      }
+    };
   }, []);
 
   if (hasPermission === null) {
@@ -88,7 +118,7 @@ export const TakeImage = ({ handleImage }) => {
 
   return (
     <>
-      {isFocused && (
+      {isActive && isFocused ? (
         <>
           <ProfileCamera
             type={
@@ -97,20 +127,24 @@ export const TakeImage = ({ handleImage }) => {
                 : Camera.Constants.Type.back
             }
             ref={cameraRef}
-            ratio={"4:3"}
           />
 
           <IconContainer>
-            <CameraIconContainer>
-              <TouchableOpacity onPress={snap}>
-                <CameraIcon />
-              </TouchableOpacity>
-            </CameraIconContainer>
+            <TouchableOpacity onPress={pickImage}>
+              <GalleryIcon />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={snap}>
+              <CameraIcon />
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={toggleCamera}>
               <SwitchCameraIcon />
             </TouchableOpacity>
           </IconContainer>
         </>
+      ) : (
+        <View />
       )}
     </>
   );

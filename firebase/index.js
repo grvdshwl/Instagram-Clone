@@ -1,12 +1,12 @@
 import * as firebase from "firebase";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyACoO_gZNysMIT4hHKWRLJK92KnNf2WAlo",
-  authDomain: "instagram-clone-73c78.firebaseapp.com",
-  projectId: "instagram-clone-73c78",
-  storageBucket: "instagram-clone-73c78.appspot.com",
-  messagingSenderId: "1050482276517",
-  appId: "1:1050482276517:web:0529355b6dc6b26cf4b54c",
+  apiKey: "AIzaSyDjPngU5STkLzy0xNbJWPnFoU04PjDvYBU",
+  authDomain: "instagram-clone-270d9.firebaseapp.com",
+  projectId: "instagram-clone-270d9",
+  storageBucket: "instagram-clone-270d9.appspot.com",
+  messagingSenderId: "269620129760",
+  appId: "1:269620129760:web:886c0e4d7f423162e50585",
 };
 
 if (!firebase.apps.length) {
@@ -39,6 +39,16 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   }
 
   return userRef;
+};
+
+export const getUserById = async (id) => {
+  try {
+    const userRef = firebase.firestore().doc(`users/${id}`);
+    const snapShot = await userRef.get();
+    return snapShot.data();
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 export const fetchPostForUser = async (uid) => {

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import LoadingPage from "../components/common/Loading/Loading.page";
 import { checkUserSession } from "../redux/users/users.action";
 import { AccountNavigator } from "./account/account.navigation";
-import { AppNavigator } from "./app/app.navigator";
+import { MainNavigator } from "./main/main.navigation";
 
 const Navigation = ({ checkSession, currentUser }) => {
   useLayoutEffect(() => {
@@ -14,7 +14,7 @@ const Navigation = ({ checkSession, currentUser }) => {
   return (
     <LoadingPage>
       <NavigationContainer>
-        {currentUser ? <AppNavigator /> : <AccountNavigator />}
+        {currentUser ? <MainNavigator /> : <AccountNavigator />}
       </NavigationContainer>
     </LoadingPage>
   );

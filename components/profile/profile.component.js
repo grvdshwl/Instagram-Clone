@@ -15,7 +15,6 @@ import {
   ProfileDescription,
 } from "./profile.styles";
 import { followRequest, unfollowRequest } from "./profile.services.js";
-import { Button } from "react-native-paper";
 import { EditProfileModal } from "../editProfile/editProfileModal.js";
 
 export const Profile = ({ posts, userData, logOut, navigation }) => {
@@ -27,25 +26,44 @@ export const Profile = ({ posts, userData, logOut, navigation }) => {
   const [following, setFollowing] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const checkIsFollowing = async () => {
-    const isFollowing = await fetchUserFollowingData(userData.id);
-    setFollowing(isFollowing);
-  };
+  // const checkIsFollowing = async () => {
+  //   const isFollowing = await fetchUserFollowingData(userData.id);
+  //   setFollowing(isFollowing);
+  // };
 
   useLayoutEffect(() => {
     if (followCondition) {
-      checkIsFollowing();
+      let unsubscribe = firebase
+        .firestore()
+        .collection("following")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("userFollowing")
+        .onSnapshot((snapShot) => {
+          const followingData = snapShot.docs.map((doc) => {
+            const data = doc.data();
+            const id = doc.id;
+            return { id, ...data };
+          });
+
+          const isFollowing = followingData.some(
+            (data) => data.id === userData.id
+          );
+
+          setFollowing(isFollowing);
+        });
+
+      return () => {
+        unsubscribe();
+      };
     }
-  }, [unfollowRequest]);
+  }, []);
 
   const handleFollow = () => {
     followRequest(userData.id);
-    checkIsFollowing();
   };
 
   const handleUnfollow = () => {
     unfollowRequest(userData.id);
-    checkIsFollowing();
   };
 
   const handleEdit = () => {

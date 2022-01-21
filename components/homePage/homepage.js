@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import firebase from "firebase";
 import { connect } from "react-redux";
 
@@ -9,8 +9,17 @@ import {
   LoadingContainer,
 } from "../common/Loading/Loading.component";
 import { FeedCard } from "../feedCard/feedCard.component";
+import styled from "styled-components";
+import { Divider } from "react-native-paper";
 
-const HomePage = ({ fetchUserFeed, loading, results }) => {
+const NoPostText = styled.Text`
+  font-weight: bold;
+  font-size: 18px;
+  margin: 20px 0px;
+  text-align: center;
+`;
+
+const HomePage = ({ fetchUserFeed, results, navigation }) => {
   useLayoutEffect(() => {
     let unsubscribe = firebase
       .firestore()
@@ -31,7 +40,7 @@ const HomePage = ({ fetchUserFeed, loading, results }) => {
     };
   }, []);
 
-  if (loading) {
+  if (!results) {
     return (
       <LoadingContainer>
         <LoadingComponent />
@@ -39,23 +48,24 @@ const HomePage = ({ fetchUserFeed, loading, results }) => {
     );
   }
 
+  if (!results.length) {
+    return <NoPostText>No Post to display....</NoPostText>;
+  }
+
   return (
     <>
-      {results.length ? (
-        <ScrollView>
-          {results.map((item) => (
-            <FeedCard key={item.id} item={item} />
-          ))}
-        </ScrollView>
-      ) : (
-        <Text>No Post...</Text>
-      )}
+      <ScrollView>
+        {results.map((item) => (
+          <View key={item.id}>
+            <FeedCard item={item} navigation={navigation} />
+          </View>
+        ))}
+      </ScrollView>
     </>
   );
 };
 
-const mapStateToProps = ({ feed: { feedLoading, feedData } }) => ({
-  loading: feedLoading,
+const mapStateToProps = ({ feed: { feedData } }) => ({
   results: feedData,
 });
 
