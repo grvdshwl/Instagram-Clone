@@ -5,8 +5,7 @@ const INITIAL_STATE = {
   isLoading: false,
   errorMessage: null,
   authLoading: false,
-  postLoading: false,
-  posts: [],
+  posts: null,
 };
 
 export const usersReducer = (state = INITIAL_STATE, action) => {
@@ -18,18 +17,16 @@ export const usersReducer = (state = INITIAL_STATE, action) => {
         isLoading: false,
         errorMessage: null,
         authLoading: false,
-        postLoading: false,
       };
 
     case usersActionTypes.CHECK_USER_SESSION:
     case usersActionTypes.LOG_OUT:
       return {
         ...state,
-        isLoading: true,
+        isLoading: false,
         errorMessage: null,
         authLoading: false,
-        posts: [],
-        postLoading: false,
+        posts: null,
       };
     case usersActionTypes.SIGN_IN:
     case usersActionTypes.SIGN_UP:
@@ -49,13 +46,11 @@ export const usersReducer = (state = INITIAL_STATE, action) => {
     case usersActionTypes.FETCH_USER_POST:
       return {
         ...state,
-        postLoading: true,
-        posts: [],
+        posts: null,
       };
     case usersActionTypes.SAVE_POST:
       return {
         ...state,
-        postLoading: false,
         posts: action.payload,
       };
     default:

@@ -5,7 +5,6 @@ import { Avatar } from "react-native-paper";
 
 const CommentContainer = styled.View`
   margin: 10px;
-  display: flex;
   flex-direction: row;
 `;
 

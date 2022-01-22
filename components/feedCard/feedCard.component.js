@@ -7,7 +7,9 @@ import { saveLike, saveUnlike } from "./feedCard.services";
 import firebase, { getUserById } from "../../firebase/index";
 import { Comment } from "../comment/comment.component";
 
-export const FeedCardContainer = styled.View``;
+export const FeedCardContainer = styled.View`
+  height: 550px;
+`;
 
 export const FeedDescription = styled.View`
   flex-direction: row;

@@ -58,6 +58,7 @@ const HomePage = ({ fetchUserFeed, results, navigation }) => {
         {results.map((item) => (
           <View key={item.id}>
             <FeedCard item={item} navigation={navigation} />
+            <Divider />
           </View>
         ))}
       </ScrollView>

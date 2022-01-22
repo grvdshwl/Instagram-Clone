@@ -17,7 +17,6 @@ import firebase from "../../firebase/index";
 const ProfileScreen = ({
   fetchPost,
   posts,
-  postLoading,
   currentUser,
   logOut,
   navigation,
@@ -48,7 +47,7 @@ const ProfileScreen = ({
   }, [isFocused]);
   return (
     <>
-      {!isFocused || postLoading ? (
+      {!isFocused || !posts ? (
         <LoadingContainer>
           <LoadingComponent />
         </LoadingContainer>
@@ -64,9 +63,9 @@ const ProfileScreen = ({
   );
 };
 
-const mapStateToProps = ({ user: { posts, postLoading, currentUser } }) => ({
+const mapStateToProps = ({ user: { posts, currentUser } }) => ({
   posts,
-  postLoading,
+
   currentUser,
 });
 const mapDispatchToProps = (dispatch) => ({

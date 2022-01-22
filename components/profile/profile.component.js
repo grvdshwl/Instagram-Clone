@@ -26,11 +26,6 @@ export const Profile = ({ posts, userData, logOut, navigation }) => {
   const [following, setFollowing] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // const checkIsFollowing = async () => {
-  //   const isFollowing = await fetchUserFollowingData(userData.id);
-  //   setFollowing(isFollowing);
-  // };
-
   useLayoutEffect(() => {
     if (followCondition) {
       let unsubscribe = firebase
@@ -101,10 +96,10 @@ export const Profile = ({ posts, userData, logOut, navigation }) => {
       {showModal && (
         <EditProfileModal navigation={navigation} hideModal={handleEdit} />
       )}
-      {posts.length ? (
-        <ProfilePost posts={posts} />
-      ) : (
+      {!posts.length ? (
         <NoPostText>No Posts To Display.....</NoPostText>
+      ) : (
+        <ProfilePost posts={posts} />
       )}
     </ProfileContainer>
   );

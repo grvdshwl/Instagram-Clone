@@ -43,8 +43,6 @@ function* logOut() {
   try {
     auth.signOut();
     yield checkUserSession();
-
-    yield put(saveFeed([]));
   } catch (error) {
     yield put(authFailure(error.message));
   }
