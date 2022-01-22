@@ -7,6 +7,9 @@ import Navigation from "./Navigation";
 import { store } from "./redux/store";
 
 LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
+LogBox.ignoreLogs([
+  "AsyncStorage has been extracted from react-native core and will be removed in a future release.",
+]);
 
 export default function App() {
   return (

@@ -23,7 +23,7 @@ export const usersReducer = (state = INITIAL_STATE, action) => {
     case usersActionTypes.LOG_OUT:
       return {
         ...state,
-        isLoading: false,
+        isLoading: true,
         errorMessage: null,
         authLoading: false,
         posts: null,

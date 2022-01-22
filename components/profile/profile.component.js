@@ -76,6 +76,7 @@ export const Profile = ({ posts, userData, logOut, navigation }) => {
         <DescriptionBox>
           <DescriptionName>{name}</DescriptionName>
           {followCondition &&
+            following !== null &&
             (!following ? (
               <FollowButton onPress={handleFollow}>follow</FollowButton>
             ) : (

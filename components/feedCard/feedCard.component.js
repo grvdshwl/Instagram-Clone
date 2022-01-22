@@ -8,7 +8,7 @@ import firebase, { getUserById } from "../../firebase/index";
 import { Comment } from "../comment/comment.component";
 
 export const FeedCardContainer = styled.View`
-  height: 550px;
+  height: 530px;
 `;
 
 export const FeedDescription = styled.View`
@@ -50,10 +50,6 @@ export const CommentsBox = styled.View`
   flex: 1;
   margin-left: 10px;
   margin-bottom: 10px;
-`;
-
-export const MoreButton = styled(Button)`
-  font-size: 10px;
 `;
 
 const TextContainer = styled.View`

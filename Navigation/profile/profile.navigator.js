@@ -19,6 +19,7 @@ export const ProfileNavigator = ({ navigation }) => {
         name="TakeProfileImage"
         component={EditProfileCamera}
         navigation={navigation}
+        options={{ headerTitle: "" }}
       />
     </Stack.Navigator>
   );

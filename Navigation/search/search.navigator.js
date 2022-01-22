@@ -15,7 +15,11 @@ export const SearchNavigator = ({ navigation }) => {
         options={{ headerShown: false }}
         navigation={navigation}
       />
-      <Stack.Screen name="UserProfile" component={UserProfile} />
+      <Stack.Screen
+        name="UserProfile"
+        component={UserProfile}
+        options={{ headerTitle: "" }}
+      />
     </Stack.Navigator>
   );
 };

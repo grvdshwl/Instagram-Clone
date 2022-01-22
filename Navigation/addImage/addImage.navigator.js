@@ -18,6 +18,7 @@ export const AddImageNavigator = ({ navigation }) => {
         name="SaveImage"
         component={SaveImageScreen}
         navigation={navigation}
+        options={{ headerTitle: "" }}
       />
     </Stack.Navigator>
   );
