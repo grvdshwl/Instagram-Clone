@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import firebase from "firebase";
 import { connect } from "react-redux";
@@ -19,9 +19,9 @@ const NoPostText = styled.Text`
   text-align: center;
 `;
 
-const HomePage = ({ fetchUserFeed, results, navigation }) => {
-  useLayoutEffect(() => {
-    let unsubscribe = firebase
+const HomePage = ({ fetchUserFeed, results, navigation, feedUsers }) => {
+  const fetchCall = () => {
+    return firebase
       .firestore()
       .collection("following")
       .doc(firebase.auth().currentUser.uid)
@@ -32,11 +32,29 @@ const HomePage = ({ fetchUserFeed, results, navigation }) => {
           const id = doc.id;
           return { id, ...data };
         });
+
         fetchUserFeed(data);
       });
+  };
+
+  useLayoutEffect(() => {
+    let unsubscribe = fetchCall();
 
     return () => {
       unsubscribe();
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection("allPosts")
+      .onSnapshot((snapShot) => {
+        fetchCall();
+      });
+
+    return () => {
+      unsubscribe;
     };
   }, []);
 
@@ -57,7 +75,11 @@ const HomePage = ({ fetchUserFeed, results, navigation }) => {
       <ScrollView>
         {results.map((item) => (
           <View key={item.id}>
-            <FeedCard item={item} navigation={navigation} />
+            <FeedCard
+              item={item}
+              navigation={navigation}
+              fetchCall={fetchCall}
+            />
             <Divider />
           </View>
         ))}
@@ -66,8 +88,9 @@ const HomePage = ({ fetchUserFeed, results, navigation }) => {
   );
 };
 
-const mapStateToProps = ({ feed: { feedData } }) => ({
+const mapStateToProps = ({ feed: { feedData, feedUsers } }) => ({
   results: feedData,
+  feedUsers,
 });
 
 const mapDispatchToProps = (dispatch) => ({

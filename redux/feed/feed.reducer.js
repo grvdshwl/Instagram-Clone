@@ -16,7 +16,9 @@ export const feedReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         feedData: null,
+        feedUsers: [],
       };
+
     default:
       return state;
   }

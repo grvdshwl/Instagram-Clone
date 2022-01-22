@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Avatar, Button } from "react-native-paper";
 import styled from "styled-components";
@@ -63,7 +63,7 @@ const CaptionText = styled.Text`
   margin: 5px 10px;
 `;
 
-export const FeedCard = ({ item, navigation }) => {
+export const FeedCard = ({ item, navigation, fetchCall }) => {
   const {
     userId,
     id,

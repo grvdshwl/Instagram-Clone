@@ -8,6 +8,7 @@ import { CommonButton } from "../common/styles/styles";
 const DisplayImage = styled.Image`
   width: 100%;
   height: 75%;
+
   ${({ front }) => front && "transform: scaleX(-1);"}
   ${({ transfer }) => transfer && "opacity:0.4"}
 `;
@@ -69,6 +70,12 @@ export const SaveImageScreen = ({ route, navigation }) => {
   };
 
   const savePostData = (downloadURL) => {
+    firebase.firestore().collection("allPosts").add({
+      downloadURL,
+      caption,
+      creation: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+
     firebase
       .firestore()
       .collection("posts")
@@ -88,6 +95,7 @@ export const SaveImageScreen = ({ route, navigation }) => {
   return (
     <View>
       <DisplayImage
+        style={{ resizeMode: "contain" }}
         source={{ uri: uri }}
         front={front}
         transfer={transferPercentage}
