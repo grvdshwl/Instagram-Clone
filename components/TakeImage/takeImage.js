@@ -54,7 +54,9 @@ export const TakeImage = ({ handleImage }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      maxWidth: 500,
+      maxHeight: 500,
+      quality: 0.5,
     });
 
     if (!result?.cancelled) {
@@ -68,7 +70,12 @@ export const TakeImage = ({ handleImage }) => {
 
   const snap = async () => {
     if (cameraRef) {
-      const photo = await cameraRef.current.takePictureAsync();
+      const photo = await cameraRef.current.takePictureAsync({
+        quality: 0.5,
+        base64: true,
+        forceUpOrientation: true,
+        fixOrientation: true,
+      });
 
       let image = {
         uri: photo.uri,

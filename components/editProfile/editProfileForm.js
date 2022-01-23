@@ -24,7 +24,9 @@ export const EditProfileForm = ({ navigation, hideModal }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.5,
+      maxWidth: 500,
+      maxHeight: 500,
     });
 
     if (!result.cancelled) {

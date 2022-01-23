@@ -5,6 +5,8 @@ import { LogBox } from "react-native";
 
 import Navigation from "./Navigation";
 import { store } from "./redux/store";
+import { ConnectionPage } from "./components/connection/connection.page";
+import ErrorBoundary from "./components/errorBoundry/error-boundry";
 
 LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
 LogBox.ignoreLogs([
@@ -16,7 +18,11 @@ export default function App() {
     <>
       <SafeArea>
         <Provider store={store}>
-          <Navigation />
+          <ErrorBoundary>
+            <ConnectionPage>
+              <Navigation />
+            </ConnectionPage>
+          </ErrorBoundary>
         </Provider>
       </SafeArea>
       <ExpoStatusBar style="auto" />

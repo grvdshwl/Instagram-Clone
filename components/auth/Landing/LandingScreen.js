@@ -1,14 +1,9 @@
-import { AuthButton, LandingPageContainer } from "./Landing.styles";
-import styled from "styled-components";
+import {
+  AnimationCover,
+  AuthButton,
+  LandingPageContainer,
+} from "./Landing.styles";
 import AnimatedLottieView from "lottie-react-native";
-
-const AnimationCover = styled.View`
-  width: 100%;
-  height: 40%;
-  top: 30px;
-  position: absolute;
-  padding: 16px;
-`;
 
 export const LandingScreen = ({ navigation }) => {
   return (
@@ -18,8 +13,7 @@ export const LandingScreen = ({ navigation }) => {
           key="animation"
           autoPlay
           loop
-          resizeMode="cover"
-          source={require("../../../assets/login.json")}
+          source={require("../../../assets/landing.json")}
         />
       </AnimationCover>
       <LandingPageContainer>
