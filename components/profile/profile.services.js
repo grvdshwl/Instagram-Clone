@@ -10,6 +10,15 @@ export const followRequest = async (id) => {
       .doc(id);
 
     followRef.set({});
+
+    const followerRef = await firebase
+      .firestore()
+      .collection("followers")
+      .doc(id)
+      .collection("userFollowers")
+      .doc(firebase.auth().currentUser.uid);
+
+    followerRef.set({});
   } catch (error) {
     console.log(error);
   }
@@ -17,12 +26,20 @@ export const followRequest = async (id) => {
 
 export const unfollowRequest = async (id) => {
   try {
-    const unfollowRef = await firebase
+    await firebase
       .firestore()
       .collection("following")
       .doc(firebase.auth().currentUser.uid)
       .collection("userFollowing")
       .doc(id)
+      .delete();
+
+    await firebase
+      .firestore()
+      .collection("followers")
+      .doc(id)
+      .collection("userFollowers")
+      .doc(firebase.auth().currentUser.uid)
       .delete();
   } catch (error) {
     console.log(error);

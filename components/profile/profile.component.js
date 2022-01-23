@@ -1,21 +1,29 @@
 import firebase, { fetchUserFollowingData } from "../../firebase/index.js";
 import React, { useLayoutEffect, useState } from "react";
+import AnimatedLottieView from "lottie-react-native";
 
 import { ProfilePost } from "../posts/profilePost";
 
 import {
   DescriptionBox,
+  DescriptionInfo,
   DescriptionName,
+  DetailsBox,
+  FollowBox,
   FollowButton,
   FollowingButton,
-  NoPostText,
+  InfoBold,
+  InfoBox,
+  InfoLight,
   ProfileAvatar,
   ProfileButton,
+  ProfileButtonWrapper,
   ProfileContainer,
   ProfileDescription,
 } from "./profile.styles";
 import { followRequest, unfollowRequest } from "./profile.services.js";
 import { EditProfileModal } from "../editProfile/editProfileModal.js";
+import { AnimationCover } from "../common/styles/styles.js";
 
 export const Profile = ({ posts, userData, logOut, navigation }) => {
   const {
@@ -25,6 +33,8 @@ export const Profile = ({ posts, userData, logOut, navigation }) => {
   const followCondition = userData.id !== firebase.auth().currentUser.uid;
   const [following, setFollowing] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [followingCount, setFollowingCount] = useState("");
+  const [followersCount, setFollowersCount] = useState("");
 
   useLayoutEffect(() => {
     if (followCondition) {
@@ -43,7 +53,6 @@ export const Profile = ({ posts, userData, logOut, navigation }) => {
           const isFollowing = followingData.some(
             (data) => data.id === userData.id
           );
-
           setFollowing(isFollowing);
         });
 
@@ -51,6 +60,48 @@ export const Profile = ({ posts, userData, logOut, navigation }) => {
         unsubscribe();
       };
     }
+  }, []);
+
+  useLayoutEffect(() => {
+    let unsubscribe = firebase
+      .firestore()
+      .collection("following")
+      .doc(userData.id)
+      .collection("userFollowing")
+      .onSnapshot((snapShot) => {
+        const followingData = snapShot.docs.map((doc) => {
+          const data = doc.data();
+          const id = doc.id;
+          return { id, ...data };
+        });
+
+        setFollowingCount(followingData.length);
+      });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    let unsubscribe = firebase
+      .firestore()
+      .collection("followers")
+      .doc(userData.id)
+      .collection("userFollowers")
+      .onSnapshot((snapShot) => {
+        const followersData = snapShot.docs.map((doc) => {
+          const data = doc.data();
+          const id = doc.id;
+          return { id, ...data };
+        });
+
+        setFollowersCount(followersData.length);
+      });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const handleFollow = () => {
@@ -74,31 +125,60 @@ export const Profile = ({ posts, userData, logOut, navigation }) => {
           }}
         />
         <DescriptionBox>
-          <DescriptionName>{name}</DescriptionName>
+          <DescriptionInfo>
+            <InfoBox>
+              <InfoBold>{posts.length}</InfoBold>
+              <InfoLight>posts</InfoLight>
+            </InfoBox>
+            <InfoBox>
+              <InfoBold>{followersCount}</InfoBold>
+              <InfoLight>followers</InfoLight>
+            </InfoBox>
+            <InfoBox>
+              <InfoBold>{followingCount}</InfoBold>
+              <InfoLight>following</InfoLight>
+            </InfoBox>
+          </DescriptionInfo>
+
           {followCondition &&
             following !== null &&
             (!following ? (
-              <FollowButton onPress={handleFollow}>follow</FollowButton>
+              <FollowBox>
+                <FollowButton onPress={handleFollow}>follow</FollowButton>
+              </FollowBox>
             ) : (
-              <FollowingButton onPress={handleUnfollow}>
-                following
-              </FollowingButton>
+              <FollowBox>
+                <FollowingButton onPress={handleUnfollow}>
+                  following
+                </FollowingButton>
+              </FollowBox>
             ))}
+
           {!followCondition && (
-            <>
+            <ProfileButtonWrapper>
               <ProfileButton onPress={handleEdit}>Edit</ProfileButton>
 
               <ProfileButton onPress={logOut}>LogOut</ProfileButton>
-            </>
+            </ProfileButtonWrapper>
           )}
         </DescriptionBox>
       </ProfileDescription>
+      <DetailsBox>
+        <DescriptionName>{name}</DescriptionName>
+      </DetailsBox>
 
       {showModal && (
         <EditProfileModal navigation={navigation} hideModal={handleEdit} />
       )}
       {!posts.length ? (
-        <NoPostText>No Posts To Display.....</NoPostText>
+        <AnimationCover>
+          <AnimatedLottieView
+            key="animation"
+            autoPlay
+            loop
+            source={require("../../assets/tumbleweed-rolling.json")}
+          />
+        </AnimationCover>
       ) : (
         <ProfilePost posts={posts} />
       )}

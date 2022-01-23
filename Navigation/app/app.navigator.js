@@ -31,7 +31,11 @@ const screenOptions = ({ route }) => {
 
 export const AppNavigator = () => {
   return (
-    <Tab.Navigator screenOptions={screenOptions} labeled={false}>
+    <Tab.Navigator
+      screenOptions={screenOptions}
+      labeled={false}
+      barStyle={{ backgroundColor: "#6200ed" }}
+    >
       <Tab.Screen name="Home" component={HomePageNavigator} />
       <Tab.Screen name="Search" component={SearchNavigator} />
       <Tab.Screen name="AddImage" component={AddImageNavigator} />

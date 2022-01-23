@@ -1,13 +1,7 @@
 import React from "react";
 import AnimatedLottieView from "lottie-react-native";
 import styled from "styled-components";
-const AnimationCover = styled.View`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: -1;
-  top: 10px;
-`;
+import { AnimationCover } from "../common/styles/styles";
 
 const ErrorView = styled.View`
   flex: 1;

@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import firebase from "firebase";
 import { connect } from "react-redux";
+import AnimatedLottieView from "lottie-react-native";
 
 import { fetchFeed } from "../../redux/feed/feed.action";
 import {
@@ -11,13 +12,11 @@ import {
 import { FeedCard } from "../feedCard/feedCard.component";
 import styled from "styled-components";
 import { Divider } from "react-native-paper";
-
-const NoPostText = styled.Text`
-  font-weight: bold;
-  font-size: 18px;
-  margin: 20px 0px;
-  text-align: center;
-`;
+import {
+  AnimationCover,
+  NoPostContainer,
+  NoPostText,
+} from "../common/styles/styles";
 
 const HomePage = ({ fetchUserFeed, results, navigation, feedUsers }) => {
   const fetchCall = () => {
@@ -67,7 +66,19 @@ const HomePage = ({ fetchUserFeed, results, navigation, feedUsers }) => {
   }
 
   if (!results.length) {
-    return <NoPostText>No Post to display....</NoPostText>;
+    return (
+      <AnimationCover>
+        <AnimatedLottieView
+          key="animation"
+          autoPlay
+          loop
+          source={require("../../assets/empty-search.json")}
+        />
+        <NoPostContainer>
+          <NoPostText>No Posts Found....</NoPostText>
+        </NoPostContainer>
+      </AnimationCover>
+    );
   }
 
   return (
